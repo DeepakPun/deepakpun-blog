@@ -7,7 +7,7 @@ import HeaderLink from "./HeaderLink.astro";
   <nav>
     <h2><a href="/">{SITE_TITLE}</a></h2>
     <div class="internal-links">
-      <HeaderLink href="/blog">Blog</HeaderLink>
+      <HeaderLink href="/blog">Latest Posts</HeaderLink>
       <HeaderLink href="https://www.deepakpun.com" target="_blank"
         >Main Site</HeaderLink
       >
@@ -38,11 +38,20 @@ import HeaderLink from "./HeaderLink.astro";
     align-items: center;
     justify-content: space-between;
   }
+
+  .internal-links {
+    display: flex;
+    align-items: center;
+  }
+
   nav a {
-    padding: 1em 0.5em;
+    display: inline-flex;
+    align-items: center;
+    padding: 1em 0.5em; /* Equal 1em top and bottom padding ensures text stays centered */
     color: var(--black);
     border-bottom: 4px solid transparent;
     text-decoration: none;
+    line-height: 1;
   }
   nav a.active {
     text-decoration: none;

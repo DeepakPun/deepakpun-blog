@@ -11,7 +11,7 @@ type Props = CollectionEntry<"blog">["data"];
 const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 ---
 
-<html lang="en">
+<html lang={Astro.url.pathname.includes("/blog/ne/") ? "ne" : "en"}>
   <head>
     <BaseHead title={title} description={description} />
     <style>
@@ -27,7 +27,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
       /* Allows the title text area to expand and fill space */
       .title-section {
         flex: 1;
-        text-align: left; /* Changes template default centered text to clean left-aligned */
+        text-align: left;
       }
 
       .title-section h1 {
@@ -39,7 +39,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
       /* Restricts and shrinks the hero image so it fits neatly on the right */
       .hero-image-side {
         flex-shrink: 0;
-        width: 300px; /* Tweak this value to make the post image smaller or larger */
+        width: 300px;
       }
 
       .hero-image-side img {
@@ -50,17 +50,42 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
         box-shadow: var(--box-shadow);
       }
 
+      /* Styles the language toggle wrapper */
+      .language-toggle-container {
+        margin: 1rem 0 2rem 0;
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      .lang-toggle-link {
+        font-size: 0.9rem;
+        font-weight: 500;
+        text-decoration: none;
+        color: var(--accent, #3273dc);
+        padding: 0.4rem 0.8rem;
+        border: 1px solid currentColor;
+        border-radius: 6px;
+        transition: background-color 0.2s ease;
+      }
+
+      .lang-toggle-link:hover {
+        background-color: rgba(50, 115, 220, 0.1);
+      }
+
       /* Responsive layout: stacks them on top of each other on mobile screens */
       @media (max-width: 768px) {
         .hero-row {
-          flex-direction: column-reverse; /* Puts image on top, title below on mobile */
+          flex-direction: column-reverse;
           gap: 1.5rem;
         }
         .hero-image-side {
-          width: 100%; /* Expands to full width on small screens */
+          width: 100%;
         }
         .title-section {
-          text-align: center; /* Reverts to centered on mobile if preferred */
+          text-align: center;
+        }
+        .language-toggle-container {
+          justify-content: center;
         }
       }
     </style>
@@ -70,7 +95,27 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
     <Header />
     <main>
       <article>
-        <!-- Highlight-start: Add this wrapper around your header assets -->
+        <!-- Cleaned Up Language Toggle Link -->
+        <div class="language-toggle-container">
+          {
+            Astro.url.pathname.includes("/blog/ne/") ? (
+              <a
+                href={Astro.url.pathname.replace("/blog/ne/", "/blog/en/")}
+                class="lang-toggle-link"
+              >
+                🌐 Read in English
+              </a>
+            ) : (
+              <a
+                href={Astro.url.pathname.replace("/blog/en/", "/blog/ne/")}
+                class="lang-toggle-link"
+              >
+                🌐 नेपालीमा पढ्नुहोस् (Read in Nepali)
+              </a>
+            )
+          }
+        </div>
+
         <div class="hero-row">
           <div class="title-section">
             <div class="date">
@@ -95,13 +140,13 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
             )
           }
         </div>
-        <!-- Highlight-end -->
 
         <div class="prose">
           <slot />
         </div>
       </article>
     </main>
+
     <Footer />
   </body>
 </html>

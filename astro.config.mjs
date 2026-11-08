@@ -8,6 +8,13 @@ import { defineConfig, fontProviders } from 'astro/config';
 export default defineConfig({
 	site: 'https://example.com',
 	integrations: [mdx(), sitemap()],
+	vite: {
+		resolve: {
+			alias: {
+				'@': new URL('./src', import.meta.url).pathname,
+			},
+		},
+	},
 	fonts: [
 		{
 			provider: fontProviders.local(),

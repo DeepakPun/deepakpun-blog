@@ -1,15 +1,19 @@
 ---
 import { Image } from "astro:assets";
-import { getCollection } from "astro:content";
+import { getCollection, type CollectionEntry } from "astro:content";
 import BaseHead from "../../components/BaseHead.astro";
 import Footer from "../../components/Footer.astro";
 import FormattedDate from "../../components/FormattedDate.astro";
 import Header from "../../components/Header.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "../../consts";
 
-const posts = (await getCollection("blog")).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
+// Fetch posts, filter out everything except the 'en/' folder, and sort by date
+const posts: CollectionEntry<"blog">[] = (await getCollection("blog"))
+  .filter((post) => post.id.startsWith("en/"))
+  .sort(
+    (a: CollectionEntry<"blog">, b: CollectionEntry<"blog">) =>
+      b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+  );
 ---
 
 <!doctype html>
@@ -17,7 +21,17 @@ const posts = (await getCollection("blog")).sort(
   <head>
     <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
     <style>
+      /* 1. Target the global body element across Astro's scoping barrier */
+      :global(body) {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        margin: 0;
+      }
+
+      /* 2. Force the main block to eat up all empty vertical space */
       main {
+        flex: 1;
         width: 960px;
         max-width: 100%;
         margin: 0 auto;
@@ -69,6 +83,7 @@ const posts = (await getCollection("blog")).sort(
         margin: 0;
         color: rgb(var(--gray));
       }
+
       /* Hover States */
       ul li a:hover h4,
       ul li a:hover .date {
@@ -77,6 +92,7 @@ const posts = (await getCollection("blog")).sort(
       ul a:hover img {
         box-shadow: var(--box-shadow);
       }
+
       /* Mobile Responsive Fix */
       @media (max-width: 600px) {
         ul li a {
